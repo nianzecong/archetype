@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>cometd DEMO</title>
+<style type="text/css">
+	*{margin:0px;padding:0px;}
+	.box{background:#e2f6fd;border:1px solid #78a9ad;width:500px;padding:10px;line-height:30px;font-size:12px;}
+	.box_left{float:left;width:260px;}
+	.box_right{float:right;width:220px;border:1px solid #78a9ad;background:#f2f2f2;height:260px;overflow:auto;line-height:18px;}
+	.area{width:260px;height:160px;border:1px solid #bcc0c1;padding:2px;font-size:14px;}
+	span{float:right;color:#50B9DC; font-family:Arial;}
+	.cl{clear:both;}
+	.mt10{margin-top:10px;}
+	strong{font-weight:normal;width:60px;display:inline-block;text-align:right;}
+	.input_txt{width:130px;border:1px solid #bbbec5;padding:2px;}
+	span.btn{float:right;display:inline;height:27px;border:1px solid #78a9ad;background:#66bbe9;cursor:pointer;color:white;padding-left:20px;padding-right:20px}
+	span.btn:hover{background:#76cbe9;}
+	span.btn_disable{float:right;display:inline;height:27px;border:1px solid #666666;background:gray;color:#aaaaaa;padding-left:20px;padding-right:20px}
+</style>
+<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="js/json2.min.js"></script>
+<script type="text/javascript" src="js/cometd/cometd.js"></script>
+<script type="text/javascript" src="js/cometd/jquery.cometd.js"></script>
+<script type="text/javascript" src="js/monitoring.js"></script>
+<script type="text/javascript">
+function connect() {
+	if($("#server").val() != "" && $("#channel").val() != "" && $("#name").val() != "" && $("#pwd").val() != "") {
+		var securityData = {
+			name : $("#name").val(),
+			pwd : $("#pwd").val()
+		}
+		conntect($("#server").val(), $("#channel").val(), "测试频道","connectInfo", securityData, 
+				function(message) {
+					$("#pre").html($("#pre").html() + "Receive Message:" + JSON.stringify(message) + "<br/>");
+				}
+		);
+		unbind();
+	}
+}
+
+$(document).ready(function() {
+	bind();
+});
+
+function bind(){
+	$("#btn_connect").removeClass("btn_disable");
+	$("#btn_connect").addClass("btn");
+    $("#btn_connect").bind("click",function(){connect();});
+}
+
+function unbind(){
+	$("#btn_connect").removeClass("btn");
+	$("#btn_connect").addClass("btn_disable");
+	$("#btn_connect").unbind("click");
+}
+</script>
+</head>
+<body>
+<div class="box">
+	<div class="box_left">
+		<p><strong>URL：</strong><input name="server" id="server" type="text" class="input_txt" value="http://10.1.2.113:8080/webnotify/cometd" style="width:200px"/></p>
+		<p><strong>CHANNEL：</strong><input name="channel" id="channel" type="text" class="input_txt" value="/notify/channel1" style="width:200px"/></p>
+		<p><strong>LOGINNAME：</strong><input name="name" id="name" type="text" class="input_txt" value="1" style="width:200px"/></p>
+		<p><strong>PASSWORD：</strong><input name="pwd" id="pwd" type="text" class="input_txt" value="123" style="width:200px"/></p>
+		<p class="mt10"><span id="btn_connect" class="btn">CONNECT</span></p>
+	</div>
+	<div><strong>STATUS：</strong><span id="connectInfo"></span></div>
+	<div class="box_right" id="pre"></div>
+	<div class="cl"></div>
+</div>
+</body>
+</html>

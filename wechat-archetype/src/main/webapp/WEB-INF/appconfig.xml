@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<param key="system.version">1.0.0</param>
+	<param key="system.buildtime">2013-12-19 19:30:00</param>
+	<param key="system.modulename">丰田G-Book智驾助手</param>
+	<param key="wechat.appid">wx6ed159059fe1655d</param>
+	<param key="wehcat.appsecret">a727fdd5d5cb9596bffcee793dd11cd4</param>
+	<param key="wehcat.apptoken">xiaohei104</param>
+</config>

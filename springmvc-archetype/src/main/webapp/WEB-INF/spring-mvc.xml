@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="com.yesway.quickstart" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	
+	<!-- 默认的注解映射的支持 -->
+	<!-- 有了它，就不需要显式的配置DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter了 -->
+	<mvc:annotation-driven >
+		<mvc:message-converters register-defaults="true">
+		<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+		<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	    	<constructor-arg value="UTF-8" />
+		</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 拦截器配置 -->
+	<!--<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean id="executeTimeInterceptor" class="com.yesway.quickstart.interceptor.ExecuteTimeInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>-->
+
+	<!-- 视图解释类 通过配置文件，把一个视图名交给到一个View来处理 InternalResourceViewResolver加入了JSTL的支持 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 增加文件上传支持 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<property name="maxUploadSize" value="104857600" />
+	</bean>
+
+	<!-- 静态资源访问处理 -->
+	<mvc:resources mapping="/css/**" location="/static/css/" />
+	<mvc:resources mapping="/js/**" location="/static/js/" />
+	<mvc:resources mapping="/images/**" location="/static/images/" />
+	<mvc:resources mapping="/resource/**" location="/static/resource/" />
+</beans>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<context:property-placeholder location="classpath*:/application.properties"	ignore-resource-not-found="true" ignore-unresolvable="true" />
+	
+	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.yesway.quickstart">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialPoolSize" value="${connection_pools.initial_pool_size}" />
+		<property name="minPoolSize" value="${connection_pools.min_pool_size}" />
+		<property name="maxPoolSize" value="${connection_pools.max_pool_size}" />
+		<property name="maxIdleTime" value="${connection_pools.max_idle_time}" />
+		<property name="acquireIncrement" value="${connection_pools.acquire_increment}" />
+		<property name="checkoutTimeout" value="${connection_pools.checkout_timeout}" />
+	</bean>
+	
+	<!-- 开启事务注解驱动 -->  
+    <tx:annotation-driven />  
+  
+    <!-- 事务管理器 -->  
+    <bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean> 
+	
+	<!-- 创建SqlSessionFactory，同时指定数据源-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+       <property name="dataSource" ref="dataSource" />
+       <!-- 指定实体类映射文件 -->
+       <property  name="mapperLocations"  value="classpath*:mybatis/*.xml"/>
+    </bean>
+    
+    <!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.yesway.quickstart.dao" />
+    </bean>
+</beans>

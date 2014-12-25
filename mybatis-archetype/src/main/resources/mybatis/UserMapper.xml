@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>     
+<!DOCTYPE mapper PUBLIC 
+"-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">     
+     
+<mapper namespace="com.yesway.quickstart.dao.UserDao">
+	<sql id="selectUser">
+		SELECT userId, loginName, fullName, password, addTime
+	</sql>
+	<!-- 用户添加 -->
+	<insert id="addUser" parameterType="com.yesway.quickstart.entity.User"> 
+		<selectKey keyProperty="userId" resultType="java.lang.Long" order="AFTER">
+			SELECT LAST_INSERT_ID() AS userId
+    	</selectKey>	
+		INSERT INTO user(loginName, fullName, password, addTime) VALUES(#{loginName}, #{fullName}, #{password}, #{addTime})
+	</insert>
+	<!-- 根据用户名获取用户信息 -->
+	<select id="getUserByLoginName" parameterType="String" resultType="com.yesway.quickstart.entity.User">
+		<include refid="selectUser"/>
+		FROM user
+		WHERE loginName = #{loginName}
+	</select>
+	<!-- 根据用户ID获取用户信息 -->
+	<select id="getUserByUserId" parameterType="long" resultType="com.yesway.quickstart.entity.User">
+		<include refid="selectUser"/>
+		FROM user
+		WHERE userId = #{userId}
+	</select>
+	<!-- 获取所有用户列表 -->
+	<select id="getUserListAll" resultType="com.yesway.quickstart.entity.User">
+		<include refid="selectUser"/>
+		FROM user
+		ORDER BY addTime DESC
+	</select>
+	<!-- 根据条件获取用户记录条数 -->
+	<select id="getUserCount" parameterType="map" resultType="int">
+		SELECT count(*)	
+		FROM user
+		WHERE 1 = 1
+		<if test="fullName != null and fullName != ''">  
+        AND fullName like CONCAT('%',#{fullName},'%')
+    	</if>
+		<if test="startTime != null">  
+        AND addTime &gt;= #{startTime} 
+    	</if>
+    	<if test="endTime != null">  
+        AND addTime &lt; #{endTime}
+    	</if>
+	</select>
+	<!-- 根据条件获取用户列表，分页 -->
+	<select id="getUserList" parameterType="map" resultType="com.yesway.quickstart.entity.User">
+		<include refid="selectUser"/> 
+		FROM user	
+		WHERE 1 = 1
+		<if test="fullName != null and fullName != ''">  
+        AND fullName like CONCAT('%',#{fullName},'%')
+    	</if>
+		<if test="startTime != null">  
+        AND addTime &gt;= #{startTime} 
+    	</if>
+    	<if test="endTime != null">  
+        AND addTime &lt; #{endTime}
+    	</if>
+		ORDER BY addTime DESC	
+		LIMIT #{offset},#{rows}
+	</select>	
+	<!-- 修改用户资料 -->
+	<update id="updateUser" parameterType="com.yesway.quickstart.entity.User"> 
+		UPDATE user SET loginName = #{loginName}, fullName = #{fullName}, password = #{password} 
+		WHERE userId = #{userId}
+	</update>
+	<!-- 删除用户资料 -->
+	<update id="deleteUser" parameterType="long"> 
+		DELETE FROM user 
+		WHERE userId = #{userId}
+	</update>
+</mapper>  

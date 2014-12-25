@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>cometd DEMO</title>
+<style type="text/css">
+	*{margin:0px;padding:0px;}
+	.box{background:#e2f6fd;border:1px solid #78a9ad;width:500px;padding:10px;line-height:30px;font-size:12px;}
+	.box_left{float:left;width:260px;}
+	.box_right{float:right;width:220px;border:1px solid #78a9ad;background:#f2f2f2;height:290px;overflow:auto;line-height:18px;}
+	.area{width:260px;height:160px;border:1px solid #bcc0c1;padding:2px;font-size:13px;}
+	span{float:right;color:#50B9DC; font-family:Arial;}
+	.cl{clear:both;}
+	.mt10{margin-top:10px;}
+	strong{font-weight:normal;width:60px;display:inline-block;text-align:right;}
+	.input_txt{width:130px;border:1px solid #bbbec5;padding:2px;}
+	span.btn{float:left;display:inline;height:27px;border:1px solid #78a9ad;background:#66bbe9;cursor:pointer;color:white;padding-left:20px;padding-right:20px}
+	span.btn:hover{background:#76cbe9;}
+	span.btn_disable{float:left;display:inline;height:27px;border:1px solid #666666;background:gray;color:#aaaaaa;padding-left:20px;padding-right:20px}
+</style>	
+<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+<script type="text/javascript" language="javascript">
+function messageSend() {
+	if($("#url").val() != "" && $("#channel").val() != "" && $("#message").val() != "") {
+		var param = {
+			channel : $("#channel").val(),
+			message : $("#message").val()
+		}
+		
+		$("#pre").html($("#pre").html() + "Send Message:" + $("#message").val() + ",");
+		
+		$.ajax({
+	    	type: "POST",
+	       	url: $("#url").val(),
+	       	data: param,
+	       	dataType: "jsonp",
+	       	success: function(result) {
+	       		$("#pre").html($("#pre").html() + " Notify:" + result + "<br/>");
+	      	},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				$("#pre").html($("#pre").html() + " Notify:" + XMLHttpRequest.status + "<br/>");
+			}
+		});
+	}
+}
+	
+</script>
+</head>
+<body>
+<div class="box">
+	<div class="box_left">
+		<p><strong>URL：</strong><input name="url" id="url" type="text" class="input_txt" value="http://10.1.2.113:8080/webnotify/notify/send.jsonp" style="width:200px"/></p>
+		<p><strong>CHANNEL：</strong><input name="channel" id="channel" type="text" class="input_txt" value="/notify/channel1" style="width:200px"/></p>
+		<p><strong>MESSAGE：</strong></p>
+		<p><textarea name="message" id="message" class="area">hello</textarea></p>
+		<p class="mt10"><span id="messageSend" onclick="messageSend();" class="btn">Send</span></p>
+	</div>
+	<div class="box_right" id="pre"></div>
+	<div class="cl"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="com.yesway.webnotify" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+
+	<!-- 默认的注解映射的支持 -->
+	<!-- 有了它，就不需要显式的配置DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter了 -->
+	<mvc:annotation-driven >
+		<mvc:message-converters register-defaults="true">
+		<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+		<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	    	<constructor-arg value="UTF-8" />
+		</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 静态资源访问处理 -->
+	<!-- 测试客户端，产品环境请删除对应页面及配置 -->
+	<mvc:resources mapping="/client/**" location="/client/" />
+</beans>
